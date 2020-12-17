@@ -1,21 +1,29 @@
 package com.core.database.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_nasabah")
 public class Nasabah {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id_nasabah;
 
     private String no_rekening;
-    private Date created_at;
+    private String no_ktp;
+    private String created_at;
     private String status;
 
     public Nasabah() {
+    }
+
+    public String getNo_ktp() {
+        return no_ktp;
+    }
+
+    public void setNo_ktp(String no_ktp) {
+        this.no_ktp = no_ktp;
     }
 
     public String getNo_rekening() {
@@ -26,11 +34,11 @@ public class Nasabah {
         this.no_rekening = no_rekening;
     }
 
-    public Date getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 

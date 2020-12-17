@@ -14,9 +14,9 @@ public class Transaksi {
     private String nama_transaksi;
     private int nominal;
     private String status_transaksi;
-    private Date created_at;
+    private String created_at;
     private String status;
-    private int id_nasabah;
+    private int id_nasabah_card;
 
     public Transaksi() {
     }
@@ -53,11 +53,11 @@ public class Transaksi {
         this.status_transaksi = status_transaksi;
     }
 
-    public Date getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
@@ -69,11 +69,11 @@ public class Transaksi {
         this.status = status;
     }
 
-    public int getId_nasabah() {
-        return id_nasabah;
+    public int getId_nasabah_card() {
+        return id_nasabah_card;
     }
 
-    public void setId_nasabah(int id_nasabah) {
-        this.id_nasabah = id_nasabah;
+    public void setId_nasabah_card(int id_nasabah_card) {
+        this.id_nasabah_card = id_nasabah_card;
     }
 }
