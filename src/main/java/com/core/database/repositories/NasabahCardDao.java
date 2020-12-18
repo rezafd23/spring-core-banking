@@ -18,7 +18,6 @@ public class NasabahCardDao {
         this.entityManager = entityManager;
         this.entityTransaction = this.entityManager.getTransaction();
     }
-
     public int addNasabahCard(NasabahCard nasabahCard) {
 //        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        LocalDateTime now = LocalDateTime.now();
@@ -28,7 +27,8 @@ public class NasabahCardDao {
         query.setParameter("id_nasabah",nasabahCard.getId_nasabah());
         query.setParameter("request_card",nasabahCard.getRequest_card());
 //        nasabahCard.setCreated_at(dtf.format(now));
-        entityManager.persist(nasabahCard);
+//        entityManager.persist(nasabahCard);
         return query.executeUpdate();
     }
+
 }

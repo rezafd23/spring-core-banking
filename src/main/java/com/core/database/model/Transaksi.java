@@ -1,32 +1,54 @@
 package com.core.database.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "tbl_transaksi")
 public class Transaksi {
     @Id
-    private int id_transksi;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id_transaksi;
 
     private String nama_transaksi;
     private int nominal;
     private String status_transaksi;
+
+    private String trx_refferal_code;
+
+    @Column(insertable = false)
     private String created_at;
+
+    @Column(insertable = false)
     private String status;
+
     private int id_nasabah_card;
 
     public Transaksi() {
     }
 
-    public int getId_transksi() {
-        return id_transksi;
+    public Transaksi(String nama_transaksi,String trx_refferal_code, int nominal, String status_transaksi, int id_nasabah_card) {
+        this.nama_transaksi = nama_transaksi;
+        this.trx_refferal_code = trx_refferal_code;
+        this.nominal = nominal;
+        this.status_transaksi = status_transaksi;
+        this.id_nasabah_card = id_nasabah_card;
     }
 
-    public void setId_transksi(int id_transksi) {
-        this.id_transksi = id_transksi;
+    public String getTrx_refferal_code() {
+        return trx_refferal_code;
+    }
+
+    public void setTrx_refferal_code(String trx_refferal_code) {
+        this.trx_refferal_code = trx_refferal_code;
+    }
+
+    public int getId_transaksi() {
+        return id_transaksi;
+    }
+
+    public void setId_transaksi(int id_transaksi) {
+        this.id_transaksi = id_transaksi;
     }
 
     public String getNama_transaksi() {

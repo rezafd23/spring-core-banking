@@ -8,6 +8,8 @@ public class DatabaseMain {
         try{
             System.out.println(" [*] Waiting for messages..");
             receiver.addNasabah();
+            receiver.addTransaksi();
+            receiver.mutasi();
         }catch (Exception e){
             System.out.println("Error DatabaseMain = " + e);
         }

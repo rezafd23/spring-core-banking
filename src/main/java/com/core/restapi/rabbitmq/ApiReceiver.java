@@ -31,7 +31,7 @@ public class ApiReceiver {
             });
 //            System.out.println(" [x] IsiPowerMessagge '" + powerMessage + "'");
             while (receiverMessage.equals("")){
-                TimeUnit.MILLISECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(0);
             }
             return receiverMessage;
         } catch (Exception e){

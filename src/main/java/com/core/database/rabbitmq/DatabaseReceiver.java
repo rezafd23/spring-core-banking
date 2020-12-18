@@ -2,6 +2,7 @@ package com.core.database.rabbitmq;
 
 import com.core.database.service.NasabahCardService;
 import com.core.database.service.NasabahService;
+import com.core.database.service.TransaksiService;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -17,6 +18,7 @@ public class DatabaseReceiver {
     private Connection connection;
     private Channel channel;
     private NasabahService nasabahService = new NasabahService();
+    private TransaksiService transaksiService = new TransaksiService();
     private NasabahCardService nasabahCardService = new NasabahCardService();
 
 
@@ -48,11 +50,14 @@ public class DatabaseReceiver {
                 String nasabahData = new String(delivery.getBody(), StandardCharsets.UTF_8);
                 System.out.println(" [x] Received '" + nasabahData + "'");
                 int res = nasabahService.addNasabah(nasabahData);
-                int res2= addNasabahCard(res,nasabahData);
-                System.out.println("HasilResService2: "+res2);
-                if (res != 0&&res2!=0) {
+
+                if (res != 0) {
                     try {
+                        int res2= addNasabahCard(res,nasabahData);
+                        System.out.println("HasilResService2: "+res2);
+                        if (res2!=0){
                         sender.sendToRestApi(String.valueOf(res),queueNameReceive);
+                        }
                     } catch (Exception e) {
                         System.out.println("Error Add Nasabah: ");
                         e.printStackTrace();
@@ -70,6 +75,73 @@ public class DatabaseReceiver {
             });
         } catch (Exception e) {
             System.out.println("Error Add Nasabah = " + e);
+        }
+    }
+
+    public void addTransaksi() {
+        String queueNameReceive="addTransaksiMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("addTransaksi", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String transaksiData = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + transaksiData + "'");
+                String res = transaksiService.addTransaksi(transaksiData);
+
+                if (!res.equals("0")) {
+                    try {
+                        sender.sendToRestApi(res,queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Add Transaksi: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Add Transaksi: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("addTransaksi", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error Add Transaksi = " + e);
+        }
+    }
+    public void mutasi() {
+        String queueNameReceive="getMutasiMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("getMutasi", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String transaksiData = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + transaksiData + "'");
+                String res = transaksiService.mutasi(transaksiData);
+
+                if (!res.equals("0")) {
+                    try {
+                        sender.sendToRestApi(res,queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("getMutasi", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error Mutasi = " + e);
         }
     }
 }
