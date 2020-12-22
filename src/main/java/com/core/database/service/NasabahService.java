@@ -38,6 +38,19 @@ public class NasabahService {
         }
     }
 
+    public String getNasabahInfo(String no_ktp){
+        String response="0";
+        connectJPA();
+        response=nasabahDao.getNasabahInfo(no_ktp);
+        try {
+            commitJPA(entityManager);
+        } catch (Exception e) {
+            System.out.println("Error:"+"-Nasabah Service-getNasabahInfo");
+            e.printStackTrace();
+        }
+        return response;
+    }
+
     public int addNasabah(String register) {
         RegisterNasabah nasabah = new Gson().fromJson(register,RegisterNasabah.class);
         connectJPA();
