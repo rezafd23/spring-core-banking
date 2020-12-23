@@ -7,7 +7,7 @@ import javax.persistence.*;
         entities={
                 @EntityResult(
                         entityClass = ViewTransaksi.class,
-                        fields={@FieldResult(name="no_rekening",column="no_rekening"),
+                        fields={@FieldResult(name="no_rekening", column="no_rekening"),
                                 @FieldResult(name="nama_transaksi", column="nama_transaksi"),
                                 @FieldResult(name="nominal", column="nominal"),
                                 @FieldResult(name="status_transaksi", column="status_transaksi"),

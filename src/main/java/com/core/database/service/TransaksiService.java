@@ -36,6 +36,20 @@ public class TransaksiService {
         }
     }
 
+    public int getSaldoById(String no_rekening){
+        connectJPA();
+        int res=0;
+        res =transaksiDao.checkSaldoId(no_rekening);
+        try {
+            commitJPA(entityManager);
+            return res;
+        } catch (Exception e) {
+            System.out.println("ErrorAddTransaksi: ");
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public String addTransaksi(String transaksiData) {
         String res="0";
         Transaksi transaksi = new Gson().fromJson(transaksiData,Transaksi.class);

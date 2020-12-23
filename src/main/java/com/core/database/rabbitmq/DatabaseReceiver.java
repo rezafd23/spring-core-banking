@@ -7,6 +7,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -139,6 +142,52 @@ public class DatabaseReceiver {
                 }
             };
             channel.basicConsume("getMutasi", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error Mutasi = " + e);
+        }
+    }
+    public void getNasabahInfo() {
+        String queueNameReceive="getNasabahInfoMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("getNasabahInfo", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String transaksiData = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + transaksiData + "'");
+                String res = nasabahService.getNasabahInfo(transaksiData);
+                String response="";
+
+                JSONParser parser = new JSONParser();
+                try {
+                    JSONObject jsonObject = (JSONObject) parser.parse(res);
+                    int saldo=transaksiService.getSaldoById(jsonObject.get("no_rekening").toString());
+                    jsonObject.put("saldo",saldo);
+                    response=jsonObject.toJSONString();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+//                JSONParser parser =new JSONParser();
+//                JSONObject jsonObject = (JSONObject) parser.parse(res);
+
+                if (!res.equals("0")) {
+                    try {
+                        sender.sendToRestApi(response,queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("getNasabahInfo", true, deliverCallback, consumerTag -> {
             });
         } catch (Exception e) {
             System.out.println("Error Mutasi = " + e);

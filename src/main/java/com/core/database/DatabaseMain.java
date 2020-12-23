@@ -10,6 +10,7 @@ public class DatabaseMain {
             receiver.addNasabah();
             receiver.addTransaksi();
             receiver.mutasi();
+            receiver.getNasabahInfo();
         }catch (Exception e){
             System.out.println("Error DatabaseMain = " + e);
         }

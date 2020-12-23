@@ -38,7 +38,11 @@ public class TransaksiDao {
         if (query.getResultList().size()!=0){
             System.out.println("masuk cek saldo 12");
             BigDecimal saldo= (BigDecimal)query.getResultList().get(0);
+            if (saldo==null){
+                return 0;
+            } else {
             return Integer.parseInt(String.valueOf(saldo));
+            }
         } else {
             System.out.println("masuk cek saldo 22");
             return query.getResultList().size();
