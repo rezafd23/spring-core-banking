@@ -74,7 +74,6 @@ public class NasabahController {
                 JSONParser parser =new JSONParser();
                 JSONObject jsonObject = (JSONObject) parser.parse(res);
 
-
                 if (!res.equals("0")) {
                     object.put("response", "200");
                     object.put("status", "Success");

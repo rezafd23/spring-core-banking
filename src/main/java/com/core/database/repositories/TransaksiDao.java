@@ -6,11 +6,25 @@ import com.core.database.model.Transaksi;
 import com.core.database.model.ViewTransaksi;
 import com.core.util.Util;
 import com.google.gson.Gson;
+import org.joda.time.Instant;
 import org.json.simple.JSONObject;
+import sun.jvm.hotspot.utilities.Interval;
 
 import javax.persistence.*;
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TransaksiDao {
     private EntityManager entityManager;
@@ -23,14 +37,24 @@ public class TransaksiDao {
 
     public String addTransaksi(Transaksi transaksi) {
         String trx_code=Util.generateUniqueCode(15,"trx");
-        Transaksi newTransaksi = new Transaksi(transaksi.getNama_transaksi(), trx_code,transaksi.getNominal(),
-                transaksi.getStatus_transaksi(),transaksi.getId_nasabah_card());
-        entityManager.persist(newTransaksi);
+//        Transaksi newTransaksi = new Transaksi(transaksi.getNama_transaksi(), trx_code,transaksi.getNominal(),
+//                transaksi.getStatus_transaksi(),transaksi.getId_nasabah_card());
+        Transaksi transaksi1 = new Transaksi(transaksi.getNama_transaksi(),transaksi.getDesc_transaksi(),transaksi.getNominal(),
+                transaksi.getStatus_transaksi(),trx_code,transaksi.getId_nasabah_card());
+        entityManager.persist(transaksi1);
         return trx_code;
     }
 
+    public int updateTransaksi(String trx_code,String desc) {
+        String query = "UPDATE Transaksi SET desc_transaksi=:desc WHERE trx_refferal_code=:trx_code";
+        Query query1 = entityManager.createQuery(query);
+        query1.setParameter("desc",desc);
+        query1.setParameter("trx_code",trx_code);
+        return query1.executeUpdate();
+    }
+
+
     public int checkSaldoId(String no_rekening){
-//        String select = "SELECT Saldo FROM Saldo WHERE nasabahId=:nasabahId";
         String select = "SELECT sum(nominal) as saldo from view_transaksi where " +
                 "status_transaksi='kredit' AND no_rekening=:no_rekening";
         Query query = entityManager.createNativeQuery(select);
@@ -42,6 +66,25 @@ public class TransaksiDao {
                 return 0;
             } else {
             return Integer.parseInt(String.valueOf(saldo));
+            }
+        } else {
+            System.out.println("masuk cek saldo 22");
+            return query.getResultList().size();
+        }
+    }
+
+    public int checkSaldoIdDeb(String no_rekening){
+        String select = "SELECT sum(nominal) as saldo from view_transaksi where " +
+                "status_transaksi='debit' AND no_rekening=:no_rekening";
+        Query query = entityManager.createNativeQuery(select);
+        query.setParameter("no_rekening", no_rekening);
+        if (query.getResultList().size()!=0){
+            System.out.println("masuk cek saldo 12");
+            BigDecimal saldo= (BigDecimal)query.getResultList().get(0);
+            if (saldo==null){
+                return 0;
+            } else {
+                return Integer.parseInt(String.valueOf(saldo));
             }
         } else {
             System.out.println("masuk cek saldo 22");
@@ -63,27 +106,33 @@ public class TransaksiDao {
         }
     }
 
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
     public String mutasi(MutasiParams transaksi){
-        String queryM="SELECT no_rekening,nama_transaksi,nominal,status_transaksi," +
-                "card_no,tgl_transaksi from view_transaksi where no_rekening=:no_rekening " +
-                "AND tgl_transaksi BETWEEN :start_date AND :end_date";
-        Query query = entityManager.createNativeQuery(queryM,ViewTransaksi.class);
+        System.out.println("ISI START DATE: "+transaksi.getStart_date());
+        System.out.println("ISI END DATE: "+transaksi.getEnd_date());
+//        List<ViewTransaksi> transaksiList = new ArrayList<>();
+
+        String queryM="SELECT no_rekening,nama_transaksi,desc_transaksi,nominal,status_transaksi," +
+                "card_no,tgl_transaksi from ViewTransaksi where no_rekening=:no_rekening " +
+                " AND tgl_transaksi BETWEEN :start_date AND :end_date";
+        Query query = entityManager.createQuery(queryM);
         query.setParameter("no_rekening",transaksi.getNo_rekening());
         query.setParameter("start_date",transaksi.getStart_date());
         query.setParameter("end_date",transaksi.getEnd_date());
         List<ViewTransaksi> transaksiList = query.getResultList();
+//        transaksiList.addAll(query.getResultList());
 
-//        for (int i=0;i<transaksiList.size();i++){
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("nama_transaksi",transaksiList.get(0).getNama_transaksi());
-//        }
         if (query.getResultList().size()!=0){
             System.out.println("Cek mutasi 12");
 //            System.out.println("isi1: "+listTransaksi.get(0).getNama_transaksi());
             return String.valueOf(new Gson().toJson(transaksiList));
         } else {
             System.out.println("cek mutasi 22");
-            return "0";
+            return "2";
         }
     }
 

@@ -22,9 +22,10 @@ public class NasabahCardDao {
 //        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        LocalDateTime now = LocalDateTime.now();
 //        nasabahCard.setStatus("1");
-        String queryInsert="INSERT INTO tbl_nasabah_card (id_nasabah,request_card) VALUES(:id_nasabah,:request_card)";
+        String queryInsert="INSERT INTO tbl_nasabah_card (id_nasabah,id_card_stock,request_card) VALUES(:id_nasabah,:id_card_stock,:request_card)";
         Query query = entityManager.createNativeQuery(queryInsert);
         query.setParameter("id_nasabah",nasabahCard.getId_nasabah());
+        query.setParameter("id_card_stock",nasabahCard.getId_card_stock());
         query.setParameter("request_card",nasabahCard.getRequest_card());
 //        nasabahCard.setCreated_at(dtf.format(now));
 //        entityManager.persist(nasabahCard);

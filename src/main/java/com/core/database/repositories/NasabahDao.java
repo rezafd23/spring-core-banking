@@ -36,10 +36,13 @@ public class NasabahDao {
 
     public String getNasabahInfo(String no_ktp){
 //        System.out.println("isi No KTP: "+no_ktp.replace("\"",""));
-        String select = "SELECT no_ktp,no_rekening, card_no, expired_at, cvv, card_type, " +
+        String select = "SELECT no_ktp,no_rekening,id_nasabah_card, card_no, expired_at, cvv, card_type, " +
                 "card_category,card_daily_limit from view_nasabah_info WHERE no_ktp=:no_ktp";
         Query query = entityManager.createNativeQuery(select,ViewNasabahInfo.class);
         query.setParameter("no_ktp",no_ktp.replace("\"",""));
+        if(query.getResultList().size()==0){
+            return "0";
+        }
         ViewNasabahInfo nasabahInfo = (ViewNasabahInfo) query.getResultList().get(0);
         System.out.println("isiLISTNASABAH: "+nasabahInfo.getCard_no());
 

@@ -9,6 +9,7 @@ import javax.persistence.*;
                         entityClass = ViewTransaksi.class,
                         fields={@FieldResult(name="no_rekening", column="no_rekening"),
                                 @FieldResult(name="nama_transaksi", column="nama_transaksi"),
+                                @FieldResult(name="desc_transaksi", column="desc_transaksi"),
                                 @FieldResult(name="nominal", column="nominal"),
                                 @FieldResult(name="status_transaksi", column="status_transaksi"),
                                 @FieldResult(name="card_no", column="card_no"),
@@ -31,6 +32,7 @@ public class ViewTransaksi {
     @Id
     private String no_rekening;
     private String nama_transaksi;
+    private String desc_transaksi;
     private int nominal;
     private String status_transaksi;
     private String card_no;
@@ -41,9 +43,10 @@ public class ViewTransaksi {
     public ViewTransaksi() {
     }
 
-    public ViewTransaksi(String no_rekening, String nama_transaksi, int nominal, String status_transaksi, String card_no, String tgl_transaksi) {
+    public ViewTransaksi(String no_rekening, String nama_transaksi, String desc_transaksi, int nominal, String status_transaksi, String card_no, String tgl_transaksi) {
         this.no_rekening = no_rekening;
         this.nama_transaksi = nama_transaksi;
+        this.desc_transaksi = desc_transaksi;
         this.nominal = nominal;
         this.status_transaksi = status_transaksi;
         this.card_no = card_no;

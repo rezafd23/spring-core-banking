@@ -4,6 +4,8 @@ import com.core.database.model.*;
 import com.core.database.repositories.NasabahCardDao;
 import com.core.database.repositories.TransaksiDao;
 import com.google.gson.Gson;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -40,6 +42,8 @@ public class TransaksiService {
         connectJPA();
         int res=0;
         res =transaksiDao.checkSaldoId(no_rekening);
+        int res2 =transaksiDao.checkSaldoIdDeb(no_rekening);
+        res =res-res2;
         try {
             commitJPA(entityManager);
             return res;
@@ -90,6 +94,27 @@ public class TransaksiService {
         try {
             commitJPA(entityManager);
             return res;
+        } catch (Exception e) {
+            System.out.println("ErrorAddTransaksi: ");
+            e.printStackTrace();
+            return "0";
+        }
+    }
+
+    public String updateTrx(String transaksiData) {
+        String res="0";
+//        MutasiParams transaksi = new Gson().fromJson(transaksiData,MutasiParams.class);
+        connectJPA();
+
+//        res =transaksiDao.updateTransaksi(transaksi);
+//        String saldo = transaksiDao.checkSaldoId()
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)parser.parse(transaksiData);
+            int res2 =transaksiDao.updateTransaksi(jsonObject.get("trx_code").toString(),
+                    jsonObject.get("desc").toString());
+            commitJPA(entityManager);
+            return String.valueOf(res2);
         } catch (Exception e) {
             System.out.println("ErrorAddTransaksi: ");
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.core.database.rabbitmq;
 
+import com.core.database.service.CardService;
 import com.core.database.service.NasabahCardService;
 import com.core.database.service.NasabahService;
 import com.core.database.service.TransaksiService;
@@ -23,6 +24,7 @@ public class DatabaseReceiver {
     private NasabahService nasabahService = new NasabahService();
     private TransaksiService transaksiService = new TransaksiService();
     private NasabahCardService nasabahCardService = new NasabahCardService();
+    private CardService cardService = new CardService();
 
 
     public void connectRabbitMQ() throws IOException, TimeoutException {
@@ -33,7 +35,11 @@ public class DatabaseReceiver {
 
     public int addNasabahCard(int id_nasabah,String nasabahData){
         try {
-            int res =nasabahCardService.addNasabahCard(id_nasabah,nasabahData);
+            int res=0;
+            int id_card =cardService.getCardReady();
+            if (id_card!=0){
+                res =nasabahCardService.addNasabahCard(id_nasabah,nasabahData,id_card);
+            }
             return res;
         }
         catch (Exception e){
@@ -147,6 +153,41 @@ public class DatabaseReceiver {
             System.out.println("Error Mutasi = " + e);
         }
     }
+
+    public void updateTrx() {
+        String queueNameReceive="updateTrxMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("updateTrx", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String transaksiData = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + transaksiData + "'");
+                String res = transaksiService.updateTrx(transaksiData);
+
+                if (!res.equals("0")) {
+                    try {
+                        sender.sendToRestApi(res,queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Mutasi: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("updateTrx", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error updateTrx = " + e);
+        }
+    }
+
     public void getNasabahInfo() {
         String queueNameReceive="getNasabahInfoMessage";
         try {

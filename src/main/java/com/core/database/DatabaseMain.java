@@ -11,6 +11,7 @@ public class DatabaseMain {
             receiver.addTransaksi();
             receiver.mutasi();
             receiver.getNasabahInfo();
+            receiver.updateTrx();
         }catch (Exception e){
             System.out.println("Error DatabaseMain = " + e);
         }

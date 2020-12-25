@@ -11,6 +11,7 @@ public class Transaksi {
     private int id_transaksi;
 
     private String nama_transaksi;
+    private String desc_transaksi;
     private int nominal;
     private String status_transaksi;
 
@@ -33,6 +34,23 @@ public class Transaksi {
         this.nominal = nominal;
         this.status_transaksi = status_transaksi;
         this.id_nasabah_card = id_nasabah_card;
+    }
+
+    public Transaksi(String nama_transaksi, String desc_transaksi, int nominal, String status_transaksi, String trx_refferal_code, int id_nasabah_card) {
+        this.nama_transaksi = nama_transaksi;
+        this.desc_transaksi = desc_transaksi;
+        this.nominal = nominal;
+        this.status_transaksi = status_transaksi;
+        this.trx_refferal_code = trx_refferal_code;
+        this.id_nasabah_card = id_nasabah_card;
+    }
+
+    public String getDesc_transaksi() {
+        return desc_transaksi;
+    }
+
+    public void setDesc_transaksi(String desc_transaksi) {
+        this.desc_transaksi = desc_transaksi;
     }
 
     public String getTrx_refferal_code() {

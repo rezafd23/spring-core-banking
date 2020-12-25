@@ -38,12 +38,13 @@ public class NasabahCardService {
         }
     }
 
-    public int addNasabahCard(int id_nasabah,String nasabahData) {
+    public int addNasabahCard(int id_nasabah,String nasabahData,int id_card_stock) {
         RegisterNasabah nasabah = new Gson().fromJson(nasabahData,RegisterNasabah.class);
         connectJPA();
         NasabahCard nasabahCard = new NasabahCard();
         nasabahCard.setId_nasabah(id_nasabah);
         nasabahCard.setRequest_card(nasabah.getRequest_card());
+        nasabahCard.setId_card_stock(id_card_stock);
         int res = nasabahCardDao.addNasabahCard(nasabahCard);
         try {
             commitJPA(entityManager);

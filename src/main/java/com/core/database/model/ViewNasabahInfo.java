@@ -13,6 +13,7 @@ import javax.persistence.*;
                         fields={
                                 @FieldResult(name="no_ktp",column="no_ktp"),
                                 @FieldResult(name="no_rekening",column="no_rekening"),
+                                @FieldResult(name="id_nasabah_card",column="id_nasabah_card"),
                                 @FieldResult(name="card_no", column="card_no"),
                                 @FieldResult(name="expired_at", column="expired_at"),
                                 @FieldResult(name="cvv", column="cvv"),
@@ -29,6 +30,7 @@ public class ViewNasabahInfo {
     private String no_ktp;
 
     private String no_rekening;
+    private int id_nasabah_card;
     private String card_no;
     private String expired_at;
     private String cvv;
@@ -53,6 +55,14 @@ public class ViewNasabahInfo {
 
     public void setNo_rekening(String no_rekening) {
         this.no_rekening = no_rekening;
+    }
+
+    public int getId_nasabah_card() {
+        return id_nasabah_card;
+    }
+
+    public void setId_nasabah_card(int id_nasabah_card) {
+        this.id_nasabah_card = id_nasabah_card;
     }
 
     public String getCard_no() {
